@@ -11,12 +11,11 @@ class Santa_Jabalina_vs:
     def __init__(self) -> None:
         """Initialize the game and create resources"""
         pygame.init
-        pygame.display.set_caption("Santa Jabalina vs...")
+        # pygame.display.set_caption("Santa Jabalina vs...")
         self.settings = Settings()
-        self.screen   = pygame.display.set_mode(
-            (self.settings.screen_width, 
-             self.settings.screen_height)
-        )
+        self.screen   = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
+        self.settings.screen_width= self.screen.get_rect().width
+        self.settings.screen_height= self.screen.get_rect().height
         self.clock    = pygame.time.Clock()
         self.avatar   = SJ_avatar(self)
 
@@ -24,6 +23,7 @@ class Santa_Jabalina_vs:
         """Run the game, which is to start the game loop"""
         while True:
             self._check_events  (                 )
+            self.avatar.update     (           )
             self._update_screen  (               )
             self.clock.tick     (self.settings.fps)
     
@@ -32,6 +32,26 @@ class Santa_Jabalina_vs:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
+            elif event.type == pygame.KEYDOWN:
+                self._check_keydown_events(event)
+            elif event.type == pygame.KEYUP:
+                self._check_keyup_events(event)
+            
+
+    def _check_keydown_events(self, event):
+        if event.key == pygame.K_RIGHT:
+            self.avatar.moving_right = True
+        elif event.key == pygame.K_LEFT:
+            self.avatar.moving_left = True
+
+    def _check_keyup_events(self, event):
+        if event.key == pygame.K_RIGHT:
+            self.avatar.moving_right = False
+        elif event.key == pygame.K_LEFT:
+            self.avatar.moving_left = False
+        elif event.key == pygame.K_q:
+            exit()
+
     
     def _update_screen   (self):
         self.screen.fill   (self.settings.bg_color)
